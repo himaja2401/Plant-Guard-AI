@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 PlantGuard AI - Crop Disease Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    <div class="particles-container" id="particles-js"></div>
+
+
+    <!-- Navigation -->
+    <nav class="navbar glass">
+        <div class="nav-container">
+            <div class="nav-logo animate-fade-in-left">
+                <div class="logo-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <span class="logo-text">PlantGuard AI</span>
+            </div>
+
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link active animate-fade-in-down stagger-delay-1">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="diseases.html" class="nav-link animate-fade-in-down stagger-delay-2">
+                    <i class="fas fa-book-medical"></i>
+                    <span>Disease Library</span>
+                </a>
+                <a href="about.html" class="nav-link animate-fade-in-down stagger-delay-3">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About</span>
+                </a>
+            </div>
+
+
+
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge animate-fade-in-up stagger-delay-1">
+                    <i class="fas fa-robot"></i>
+                    AI-Powered Plant Health Analysis
+                </div>
+
+                <h1 class="hero-title animate-fade-in-up stagger-delay-2">
+                    Detect <span class="gradient-text animate-gradient">Plant Diseases</span>
+                    in Seconds
+                </h1>
+
+                <p class="hero-description animate-fade-in-up stagger-delay-3">
+                    Upload a photo of your plant leaf and get instant, accurate disease detection
+                    with AI-powered analysis and personalized treatment recommendations.
+                </p>
+
+                <div class="hero-stats">
+                    <div class="stat-card animate-fade-in-up stagger-delay-4 hover-scale transition-all">
+                        <div class="stat-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number">96.7%</div>
+                            <div class="stat-label">Accuracy Rate</div>
+                        </div>
+                    </div>
+                    <div class="stat-card animate-fade-in-up stagger-delay-5 hover-scale transition-all">
+                        <div class="stat-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number">25+</div>
+                            <div class="stat-label">Plant Diseases</div>
+                        </div>
+                    </div>
+                    <div class="stat-card animate-fade-in-up stagger-delay-6 hover-scale transition-all">
+                        <div class="stat-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number">Instant</div>
+                            <div class="stat-label">Results</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div
+                    class="floating-card upload-card glass animate-fade-in-up stagger-delay-4 hover-lift transition-all">
+                    <div class="card-header">
+                        <h3>Upload Leaf Image</h3>
+                        <div class="card-badge success animate-pulse">
+                            <i class="fas fa-check"></i>
+                            AI Ready
+                        </div>
+                    </div>
+
+                    <div class="upload-area upload-pulse" id="uploadArea">
+                        <div class="upload-icon animate-bounce">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4>Drag & Drop Image</h4>
+                        <p>Supports JPG, PNG, WEBP</p>
+                        <div class="upload-features">
+                            <div class="feature animate-fade-in-up stagger-delay-1">
+                                <i class="fas fa-check"></i>
+                                <span>High Accuracy</span>
+                            </div>
+                            <div class="feature animate-fade-in-up stagger-delay-2">
+                                <i class="fas fa-check"></i>
+                                <span>Instant Results</span>
+                            </div>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                        <button class="btn-primary hover-scale transition-all"
+                            onclick="document.getElementById('imageInput').click()">
+                            <i class="fas fa-folder-open"></i>
+                            Browse Files
+                        </button>
+                    </div>
+
+                    <div class="image-preview" id="imagePreview">
+                        <div class="preview-header">
+                            <h4>Image Preview</h4>
+                            <button class="btn-close hover-scale transition-all" onclick="clearImage()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <img id="previewImage" src="" alt="Preview">
+                        <button class="btn-primary btn-analyze hover-lift transition-all" onclick="analyzeImage()">
+                            <i class="fas fa-search"></i>
+                            Analyze Image
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Floating Elements -->
+                <div class="floating-element el-1 animate-float">
+                    <i class="fas fa-apple-alt"></i>
+                </div>
+                <div class="floating-element el-2 animate-float-slow">
+                    <i class="fas fa-carrot"></i>
+                </div>
+                <div class="floating-element el-3 animate-float">
+                    <i class="fas fa-seedling"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Analysis Results</h2>
+                <p>Comprehensive disease detection and treatment recommendations</p>
+                <div class="results-grid">
+                    <!-- Disease Card -->
+                    <div class="result-card glass reveal hover-lift transition-all">
+                        <div class="card-header">
+                            <h3 class="animate-fade-in-left">
+                                <i class="fas fa-diagnoses"></i>
+                                Disease Detection
+                            </h3>
+                            <div class="confidence-meter">
+                                <div class="confidence-badge confidence-glow" id="confidenceBadge">
+                                    <span id="confidenceValue">0%</span>
+                                    Confidence
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disease-result">
+                            <div class="disease-icon disease-icon-pulse" id="diseaseIcon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div class="disease-info">
+                                <div class="disease-name animate-fade-in-up" id="diseaseName">No Analysis Yet</div>
+                                <div class="health-status animate-fade-in-up stagger-delay-1" id="healthStatus">
+                                    <span class="status-dot"></span>
+                                    Upload image to begin analysis
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="disease-stats">
+                            <div class="stat animate-fade-in-up stagger-delay-2">
+                                <div class="stat-value" id="healthyProb">0%</div>
+                                <div class="stat-label">Healthy</div>
+                            </div>
+                            <div class="stat animate-fade-in-up stagger-delay-3">
+                                <div class="stat-value" id="diseaseProb">0%</div>
+                                <div class="stat-label">Diseased</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations Card -->
+                    <div class="result-card glass reveal hover-lift transition-all">
+                        <div class="card-header">
+                            <h3 class="animate-fade-in-right">
+                                <i class="fas fa-lightbulb"></i>
+                                Treatment Recommendations
+                            </h3>
+                        </div>
+
+                        <div class="recommendations" id="recommendations">
+                            <div class="empty-state">
+                                <i class="fas fa-microscope"></i>
+                                <h4>No Analysis Yet</h4>
+                                <p>Upload a plant image to get personalized treatment recommendations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Probabilities Chart -->
+                    <div class="result-card glass full-width reveal hover-lift transition-all">
+                        <div class="card-header">
+                            <h3 class="animate-fade-in-up">
+                                <i class="fas fa-chart-bar"></i>
+                                Detection Probabilities
+                            </h3>
+                        </div>
+
+                        <div class="probabilities-chart" id="probabilitiesChart">
+                            <div class="empty-state">
+                                <i class="fas fa-chart-pie"></i>
+                                <h4>Waiting for Analysis</h4>
+                                <p>Probabilities will appear here after image analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Why Choose PlantGuard AI?</h2>
+                <p>Advanced features for modern agriculture</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card glass reveal hover-lift transition-all">
+                    <div class="feature-icon animate-tada">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="animate-fade-in-up stagger-delay-1">AI-Powered Analysis</h3>
+                    <p class="animate-fade-in-up stagger-delay-2">Advanced deep learning models trained on thousands of
+                        plant images for accurate disease detection</p>
+                    <div class="feature-badge animate-fade-in-up stagger-delay-3">Neural Network</div>
+                </div>
+
+                <div class="feature-card glass reveal hover-lift transition-all">
+                    <div class="feature-icon animate-swing">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="animate-fade-in-up stagger-delay-1">Mobile Optimized</h3>
+                    <p class="animate-fade-in-up stagger-delay-2">Receive timely notifications for detected plant issues
+                        based on continuous monitoring.</p>
+                    <div class="feature-badge animate-fade-in-up stagger-delay-3">Responsive</div>
+                </div>
+                <div class="feature-card glass reveal hover-lift transition-all">
+                    <div class="feature-icon animate-swing">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="animate-fade-in-up stagger-delay-1">Automated Alerts</h3>
+                    <p class="animate-fade-in-up stagger-delay-2">Works seamlessly on all devices - smartphones,
+                        tablets, and desktop computers</p>
+                    <div class="feature-badge animate-fade-in-up stagger-delay-3">Proactive</div>
+                </div>
+                <div class="feature-card glass reveal hover-lift transition-all">
+                    <div class="feature-icon animate-pulse">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="animate-fade-in-up stagger-delay-1">Real-Time Results</h3>
+                    <p class="animate-fade-in-up stagger-delay-2">Get instant analysis and recommendations without
+                        waiting for processing</p>
+                    <div class="feature-badge animate-fade-in-up stagger-delay-3">Fast</div>
+                </div>
+
+                <div class="feature-card glass reveal hover-lift transition-all">
+                    <div class="feature-icon animate-heartbeat">
+                        <i class="fas fa-book-medical"></i>
+                    </div>
+                    <h3 class="animate-fade-in-up stagger-delay-1">Expert Knowledge</h3>
+                    <p class="animate-fade-in-up stagger-delay-2">Treatment recommendations based on agricultural
+                        research and expert knowledge</p>
+                    <div class="feature-badge animate-fade-in-up stagger-delay-3">Verified</div>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card glass reveal hover-lift transition-all">
+                        <div class="feature-icon animate-tada">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="animate-fade-in-up stagger-delay-1">Customizable Reports</h3>
+                        <p class="animate-fade-in-up stagger-delay-2">Generate tailored reports with detailed insights
+                            for specific crops or regions.</p>
+                        <div class="feature-badge animate-fade-in-up stagger-delay-3">Detailed</div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- Supported Plants -->
+    <section class="plants-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Supported Plants & Diseases</h2>
+                <p>Comprehensive coverage for major crops</p>
+            </div>
+
+            <div class="plants-grid">
+                <div class="plant-card glass reveal hover-lift transition-all">
+                    <div class="plant-header">
+                        <div class="plant-icon animate-bounce">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <h3 class="animate-fade-in-left">Apple Trees</h3>
+                    </div>
+                    <ul class="disease-list">
+                        <li class="disease-item animate-fade-in-up stagger-delay-1">
+                            <i class="fas fa-bug"></i>
+                            Apple Scab
+                        </li>
+                        <li class="disease-item animate-fade-in-up stagger-delay-2">
+                            <i class="fas fa-fire"></i>
+                            Black Rot
+                        </li>
+                        <li class="disease-item animate-fade-in-up stagger-delay-3">
+                            <i class="fas fa-wind"></i>
+                            Cedar Rust
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="plant-card glass reveal hover-lift transition-all">
+                    <div class="plant-header">
+                        <div class="plant-icon animate-bounce">
+                            <i class="fas fa-pepper-hot"></i>
+                        </div>
+                        <h3 class="animate-fade-in-left">Tomato Plants</h3>
+                    </div>
+                    <ul class="disease-list">
+                        <li class="disease-item animate-fade-in-up stagger-delay-1">
+                            <i class="fas fa-circle"></i>
+                            Early Blight
+                        </li>
+                        <li class="disease-item animate-fade-in-up stagger-delay-2">
+                            <i class="fas fa-tint"></i>
+                            Late Blight
+                        </li>
+                        <li class="disease-item animate-fade-in-up stagger-delay-3">
+                            <i class="fas fa-cloud"></i>
+                            Leaf Mold
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="plant-card glass reveal hover-lift transition-all">
+                    <div class="plant-header">
+                        <div class="plant-icon animate-bounce">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3 class="animate-fade-in-left">Potato Crops</h3>
+                    </div>
+                    <ul class="disease-list">
+                        <li class="disease-item animate-fade-in-up stagger-delay-1">
+                            <i class="fas fa-sun"></i>
+                            Early Blight
+                        </li>
+                        <li class="disease-item animate-fade-in-up stagger-delay-2">
+                            <i class="fas fa-moon"></i>
+                            Late Blight
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="plant-card glass reveal hover-lift transition-all">
+                    <div class="plant-header">
+                        <div class="plant-icon animate-bounce">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3 class="animate-fade-in-left">Corn Fields</h3>
+                    </div>
+                    <ul class="disease-list">
+                        <li class="disease-item animate-fade-in-up stagger-delay-1">
+                            <i class="fas fa-rust"></i>
+                            Common Rust
+                        </li>
+                        <li class="disease-item animate-fade-in-up stagger-delay-2">
+                            <i class="fas fa-leaf"></i>
+                            Northern Blight
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content glass reveal hover-glow transition-all">
+                <h2 class="animate-fade-in-up stagger-delay-1">Ready to Protect Your Crops?</h2>
+                <p class="animate-fade-in-up stagger-delay-2">Join thousands of farmers using AI to prevent crop losses
+                </p>
+                <div class="cta-actions animate-fade-in-up stagger-delay-3">
+                    <button class="btn-primary btn-large hover-lift transition-all" onclick="scrollToUpload()">
+                        <i class="fas fa-camera"></i>
+                        Start Scanning
+                    </button>
+                    <button class="btn-outline btn-large hover-lift transition-all"
+                        onclick="window.location.href='learn-more.html'">
+                        <i class="fas fa-book"></i>
+                        Learn More
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand reveal">
+                    <div class="logo animate-fade-in-left">
+                        <i class="fas fa-leaf"></i>
+                        PlantGuard AI
+                    </div>
+                    <p class="animate-fade-in-up stagger-delay-1">AI-powered crop disease detection for modern
+                        agriculture</p>
+                    <div class="social-links">
+                        <a href="https://x.com/"
+                            class="social-link animate-fade-in-up stagger-delay-2 hover-scale transition-all">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.facebook.com/"
+                            class="social-link animate-fade-in-up stagger-delay-3 hover-scale transition-all">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://linkedin.com"
+                            class="social-link animate-fade-in-up stagger-delay-4 hover-scale transition-all">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://github.com"
+                            class="social-link animate-fade-in-up stagger-delay-5 hover-scale transition-all">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <div class="link-group reveal">
+                        <h4 class="animate-fade-in-down">Product</h4>
+                        <a href="#" class="animate-fade-in-up stagger-delay-1">Features</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-2">Pricing</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-3">API</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-4">Documentation</a>
+                    </div>
+                    <div class="link-group reveal">
+                        <h4 class="animate-fade-in-down">Company</h4>
+                        <a href="#" class="animate-fade-in-up stagger-delay-1">About</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-2">Blog</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-3">Careers</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-4">Contact</a>
+                    </div>
+                    <div class="link-group reveal">
+                        <h4 class="animate-fade-in-down">Support</h4>
+                        <a href="#" class="animate-fade-in-up stagger-delay-1">Help Center</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-2">Community</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-3">Farmers Guide</a>
+                        <a href="#" class="animate-fade-in-up stagger-delay-4">Status</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom reveal">
+                <p class="animate-fade-in-up">&copy; 2024 PlantGuard AI. All rights reserved.</p>
+                <div class="footer-meta">
+                    <a href="#" class="animate-fade-in-up stagger-delay-1">Privacy Policy</a>
+                    <a href="#" class="animate-fade-in-up stagger-delay-2">Terms of Service</a>
+                    <a href="#" class="animate-fade-in-up stagger-delay-3">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Modal -->
+    <div class="modal" id="loadingModal">
+        <div class="modal-content glass animate-scale-in">
+            <div class="loader-container">
+                <div class="ai-loader">
+                    <div class="loader-circle"></div>
+                    <div class="loader-circle"></div>
+                    <div class="loader-circle"></div>
+                </div>
+                <h3 class="animate-fade-in-up stagger-delay-1">AI Analysis in Progress</h3>
+                <p class="animate-fade-in-up stagger-delay-2">Scanning image for disease patterns...</p>
+                <div class="ai-thinking animate-fade-in-up stagger-delay-3">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="progress-bar animate-fade-in-up stagger-delay-4">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="particles.js"></script>
+    <script src="chart.js"></script>
+    <script src="app.js"></script>
+    <script>
+
+        
+
+        // Add this function to inject the required CSS for probability bars
+        function injectProbabilityStyles() {
+            const style = document.createElement('style');
+            style.textContent = `
+        .probability-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            width: 100%;
+            padding: 1rem 0;
+        }
+        .probability-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .bar-label {
+            width: 80px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .bar-container {
+            flex: 1;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+            animation: fillAnimation 1s ease-in-out;
+        }
+        .healthy .bar-fill {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        .disease .bar-fill {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        .bar-value {
+            width: 50px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        @keyframes fillAnimation {
+            from { width: 0% !important; }
+            to { width: var(--target-width) !important; }
+        }
+        
+        /* Recommendation items styling */
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .recommendation-item:last-child {
+            margin-bottom: 0;
+        }
+        .recommendation-item i {
+            font-size: 1.2rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        .recommendation-item div {
+            flex: 1;
+        }
+        .recommendation-item h4 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            color: white;
+        }
+        .recommendation-item p {
+            margin: 0;
+            opacity: 0.8;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        /* Health status styling */
+        .health-status.healthy .status-dot {
+            background: #10b981 !important;
+        }
+        .health-status:not(.healthy) .status-dot {
+            background: #ef4444 !important;
+        }
+        
+        /* Disabled button styling */
+        .btn-analyze:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn-analyze:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+    `;
+            document.head.appendChild(style);
+        }
+
+        // Image Upload Functionality
+        function setupImageUpload() {
+            const imageInput = document.getElementById('imageInput');
+            const uploadArea = document.getElementById('uploadArea');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+
+            // Handle file selection
+            imageInput.addEventListener('change', function (e) {
+                handleImageSelection(this.files[0]);
+            });
+
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+
+            uploadArea.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+            });
+
+            uploadArea.addEventListener('drop', function (e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    handleImageSelection(e.dataTransfer.files[0]);
+                }
+            });
+
+            function handleImageSelection(file) {
+                if (!file) return;
+
+                // Check if file is an image
+                if (!file.type.match('image.*')) {
+                    alert('Please select an image file (JPG, PNG, WEBP)');
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                    uploadArea.style.display = 'none';
+                    imagePreview.style.display = 'block';
+
+                    // Re-enable analyze button when new image is uploaded
+                    const analyzeButton = document.querySelector('.btn-analyze');
+                    if (analyzeButton) {
+                        analyzeButton.disabled = false;
+                        analyzeButton.innerHTML = '<i class="fas fa-search"></i> Analyze Image';
+                    }
+                }
+
+                reader.onerror = function () {
+                    alert('Error reading the image file. Please try again.');
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Clear uploaded image
+        function clearImage() {
+            const imageInput = document.getElementById('imageInput');
+            const uploadArea = document.getElementById('uploadArea');
+            const imagePreview = document.getElementById('imagePreview');
+
+            imageInput.value = '';
+            uploadArea.style.display = 'block';
+            imagePreview.style.display = 'none';
+
+            // Re-enable analyze button when image is cleared
+            const analyzeButton = document.querySelector('.btn-analyze');
+            if (analyzeButton) {
+                analyzeButton.disabled = false;
+                analyzeButton.innerHTML = '<i class="fas fa-search"></i> Analyze Image';
+            }
+        }
+
+        // Track if analysis has been performed
+        let analysisPerformed = false;
+
+        // Analyze image function
+        function analyzeImage() {
+            const imageInput = document.getElementById('imageInput');
+            const analyzeButton = document.querySelector('.btn-analyze');
+
+            if (!imageInput.files || !imageInput.files[0]) {
+                alert('Please select an image first!');
+                return;
+            }
+
+            // Disable the button immediately
+            analyzeButton.disabled = true;
+            analyzeButton.innerHTML = '<i class="fas fa-check"></i> Analysis Completed';
+
+            // Set analysis performed flag
+            analysisPerformed = true;
+
+            // Show loading modal
+            const loadingModal = document.getElementById('loadingModal');
+            loadingModal.style.display = 'flex';
+
+            // Simulate AI analysis
+            setTimeout(function () {
+                // Hide loading modal
+                loadingModal.style.display = 'none';
+
+                // Generate random results for demo
+                const isHealthy = Math.random() > 0.5;
+                const confidence = Math.floor(Math.random() * 30) + 70;
+
+                // Update results
+                updateResults(isHealthy, confidence);
+
+                // Scroll to results
+                document.getElementById('resultsSection').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }, 3000);
+        }
+
+        // Update results with analysis data
+        function updateResults(isHealthy, confidence) {
+            const diseaseName = document.getElementById('diseaseName');
+            const healthStatus = document.getElementById('healthStatus');
+            const confidenceValue = document.getElementById('confidenceValue');
+            const healthyProb = document.getElementById('healthyProb');
+            const diseaseProb = document.getElementById('diseaseProb');
+            const diseaseIcon = document.getElementById('diseaseIcon');
+            const recommendations = document.getElementById('recommendations');
+
+            // Update confidence
+            confidenceValue.textContent = `${confidence}%`;
+
+            if (isHealthy) {
+                // Healthy plant results
+                diseaseName.textContent = 'Healthy Plant';
+                healthStatus.innerHTML = '<span class="status-dot"></span> No diseases detected';
+                healthStatus.classList.add('healthy');
+                diseaseIcon.innerHTML = '<i class="fas fa-leaf"></i>';
+                healthyProb.textContent = `${confidence}%`;
+                diseaseProb.textContent = `${100 - confidence}%`;
+
+                // Healthy recommendations
+                recommendations.innerHTML = `
+            <div class="recommendation-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <h4>Continue Current Care</h4>
+                    <p>Your plant appears healthy. Maintain regular watering and monitoring.</p>
+                </div>
+            </div>
+            <div class="recommendation-item">
+                <i class="fas fa-sun"></i>
+                <div>
+                    <h4>Ensure Proper Sunlight</h4>
+                    <p>Make sure your plant gets adequate sunlight based on its species requirements.</p>
+                </div>
+            </div>
+            <div class="recommendation-item">
+                <i class="fas fa-tint"></i>
+                <div>
+                    <h4>Monitor Watering</h4>
+                    <p>Check soil moisture regularly and adjust watering as needed.</p>
+                </div>
+            </div>
+        `;
+            } else {
+                // Diseased plant results
+                const diseases = [
+                    { name: 'Leaf Spot', icon: 'fas fa-circle' },
+                    { name: 'Powdery Mildew', icon: 'fas fa-cloud' },
+                    { name: 'Rust', icon: 'fas fa-fire' }
+                ];
+
+                const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+
+                diseaseName.textContent = randomDisease.name;
+                healthStatus.innerHTML = '<span class="status-dot"></span> Disease detected - treatment needed';
+                healthStatus.classList.remove('healthy');
+                diseaseIcon.innerHTML = `<i class="${randomDisease.icon}"></i>`;
+                healthyProb.textContent = `${100 - confidence}%`;
+                diseaseProb.textContent = `${confidence}%`;
+
+                // Disease-specific recommendations
+                recommendations.innerHTML = `
+            <div class="recommendation-item">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h4>Isolate Affected Plant</h4>
+                    <p>Prevent spread to other plants by isolating the affected one.</p>
+                </div>
+            </div>
+            <div class="recommendation-item">
+                <i class="fas fa-spray-can"></i>
+                <div>
+                    <h4>Apply Fungicide</h4>
+                    <p>Use a recommended fungicide according to package instructions.</p>
+                </div>
+            </div>
+            <div class="recommendation-item">
+                <i class="fas fa-cut"></i>
+                <div>
+                    <h4>Remove Affected Leaves</h4>
+                    <p>Carefully remove and dispose of severely affected leaves.</p>
+                </div>
+            </div>
+        `;
+            }
+
+            // Update probabilities chart
+            updateProbabilitiesChart(isHealthy, confidence);
+        }
+
+        // Update probabilities chart
+        function updateProbabilitiesChart(isHealthy, confidence) {
+            const chartElement = document.getElementById('probabilitiesChart');
+
+            // Remove empty state
+            chartElement.innerHTML = '';
+
+            if (isHealthy) {
+                chartElement.innerHTML = `
+            <div class="probability-bars">
+                <div class="probability-bar healthy">
+                    <div class="bar-label">Healthy</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="--target-width: ${confidence}%; width: ${confidence}%"></div>
+                    </div>
+                    <div class="bar-value">${confidence}%</div>
+                </div>
+                <div class="probability-bar disease">
+                    <div class="bar-label">Diseased</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="--target-width: ${100 - confidence}%; width: ${100 - confidence}%"></div>
+                    </div>
+                    <div class="bar-value">${100 - confidence}%</div>
+                </div>
+            </div>
+        `;
+            } else {
+                chartElement.innerHTML = `
+            <div class="probability-bars">
+                <div class="probability-bar healthy">
+                    <div class="bar-label">Healthy</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="--target-width: ${100 - confidence}%; width: ${100 - confidence}%"></div>
+                    </div>
+                    <div class="bar-value">${100 - confidence}%</div>
+                </div>
+                <div class="probability-bar disease">
+                    <div class="bar-label">Diseased</div>
+                    <div class="bar-container">
+                        <div class="bar-fill" style="--target-width: ${confidence}%; width: ${confidence}%"></div>
+                    </div>
+                    <div class="bar-value">${confidence}%</div>
+                </div>
+            </div>
+        `;
+            }
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            initScrollReveal();
+            setupImageUpload();
+            injectProbabilityStyles();
+
+            // Add animation to hero section on load
+            const heroElements = document.querySelectorAll('.hero-content > *');
+            heroElements.forEach((element, index) => {
+                element.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+
+        // Scroll reveal functionality
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            reveals.forEach(reveal => {
+                observer.observe(reveal);
+            });
+        }
+
+        // Scroll to upload function
+        function scrollToUpload() {
+            document.querySelector('.hero').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>

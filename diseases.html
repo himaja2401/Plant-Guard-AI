@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Library - PlantGuard AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9f7;
+            color: #2d4a3b;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: #4caf50;
+            font-size: 28px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #2d4a3b;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #4caf50;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .page-header h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .page-header p {
+            font-size: 18px;
+            color: #5a7a69;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border-radius: 50px;
+            border: 1px solid #c8e6c9;
+            font-size: 16px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5a7a69;
+        }
+        
+        .filter-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background-color: white;
+            border: 1px solid #c8e6c9;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background-color: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+        
+        .disease-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .disease-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .disease-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+        
+        .disease-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .disease-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .disease-card:hover .disease-image img {
+            transform: scale(1.05);
+        }
+        
+        .disease-content {
+            padding: 25px;
+        }
+        
+        .disease-name {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #2d4a3b;
+        }
+        
+        .disease-scientific {
+            font-style: italic;
+            color: #5a7a69;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .disease-description {
+            color: #5a7a69;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        
+        .disease-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            background-color: #e8f5e9;
+            color: #2d4a3b;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .tag.severity-high {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .tag.severity-medium {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .view-details {
+            display: inline-block;
+            color: #4caf50;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        
+        .view-details:hover {
+            color: #3d8b40;
+        }
+        
+        .back-to-home {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3d8b40;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            color: #5a7a69;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        @media (max-width: 768px) {
+            .disease-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+                <h1>PlantGuard AI</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li> 
+                    <li><a href="about.html" class="active">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="page-header">
+            <h1>Plant Disease Library</h1>
+            <p>Browse our comprehensive database of plant diseases with detailed information, symptoms, and treatment recommendations.</p>
+        </div>
+
+        
+        <div class="disease-grid">
+            <!-- Disease 1 -->
+            <div class="disease-card">
+                <div class="disease-image">
+                    <img src="img1.jpg" alt="Late Blight">
+                </div>
+                <div class="disease-content">
+                    <h3 class="disease-name">Late Blight</h3>
+                    <p class="disease-scientific">Phytophthora infestans</p>
+                    <p class="disease-description">A devastating disease affecting potatoes and tomatoes, causing rapid plant destruction under cool, wet conditions.</p>
+                    <div class="disease-tags">
+                        <span class="tag severity-high">High Severity</span>
+                        <span class="tag">Tomatoes</span>
+                        <span class="tag">Potatoes</span>
+                    </div>
+                    <a href="late-blight.html" class="view-details">View Details & Treatment <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Disease 2 -->
+            <div class="disease-card">
+                <div class="disease-image">
+                    <img src="img2.webp" alt="Powdery Mildew">
+                </div>
+                <div class="disease-content">
+                    <h3 class="disease-name">Powdery Mildew</h3>
+                    <p class="disease-scientific">Erysiphales</p>
+                    <p class="disease-description">Fungal disease appearing as white powdery spots on leaves and stems, common in warm, dry climates.</p>
+                    <div class="disease-tags">
+                        <span class="tag severity-medium">Medium Severity</span>
+                        <span class="tag">Cucurbits</span>
+                        <span class="tag">Grapes</span>
+                    </div>
+                    <a href="Powdery-Mildew.html" class="view-details">View Details & Treatment <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Disease 3 -->
+            <div class="disease-card">
+                <div class="disease-image">
+                    <img src="img3.avif" alt="Apple Scab">
+                </div>
+                <div class="disease-content">
+                    <h3 class="disease-name">Apple Scab</h3>
+                    <p class="disease-scientific">Venturia inaequalis</p>
+                    <p class="disease-description">Fungal disease causing dark, scaly lesions on apple leaves and fruit, leading to defoliation and fruit damage.</p>
+                    <div class="disease-tags">
+                        <span class="tag severity-medium">Medium Severity</span>
+                        <span class="tag">Apples</span>
+                        <span class="tag">Crabapples</span>
+                    </div>
+                    <a href="apple-scab.html" class="view-details">View Details & Treatment <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Disease 4 -->
+            <div class="disease-card">
+                <div class="disease-image">
+                    <img src="img4.jpg" alt="Bacterial Spot">
+                </div>
+                <div class="disease-content">
+                    <h3 class="disease-name">Bacterial Spot</h3>
+                    <p class="disease-scientific">Xanthomonas campestris</p>
+                    <p class="disease-description">Bacterial disease causing small, dark, raised spots on leaves and fruit, common in peppers and tomatoes.</p>
+                    <div class="disease-tags">
+                        <span class="tag severity-medium">Medium Severity</span>
+                        <span class="tag">Peppers</span>
+                        <span class="tag">Tomatoes</span>
+                    </div>
+                    <a href="bacterial-spot.html" class="view-details">View Details & Treatment <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Disease 5 -->
+            <div class="disease-card">
+                <div class="disease-image">
+                    <img src="img5.jpeg" alt="Early Blight">
+                </div>
+                <div class="disease-content">
+                    <h3 class="disease-name">Early Blight</h3>
+                    <p class="disease-scientific">Alternaria solani</p>
+                    <p class="disease-description">Fungal disease causing concentric rings on leaves, stems, and fruit of tomatoes and potatoes.</p>
+                    <div class="disease-tags">
+                        <span class="tag severity-medium">Medium Severity</span>
+                        <span class="tag">Tomatoes</span>
+                        <span class="tag">Potatoes</span>
+                    </div>
+                    <a href="early-blight.html" class="view-details">View Details & Treatment <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Disease 6 -->
+            <div class="disease-card">
+                <div class="disease-image">
+                    <img src="img6.jpeg" alt="Gray Mold">
+                </div>
+                <div class="disease-content">
+                    <h3 class="disease-name">Gray Mold</h3>
+                    <p class="disease-scientific">Botrytis cinerea</p>
+                    <p class="disease-description">Fungal disease causing grayish-brown mold on flowers, fruits, and leaves, especially in humid conditions.</p>
+                    <div class="disease-tags">
+                        <span class="tag severity-medium">Medium Severity</span>
+                        <span class="tag">Strawberries</span>
+                        <span class="tag">Grapes</span>
+                    </div>
+                    <a href="gray-mold.html" class="view-details">View Details & Treatment <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-to-home">
+            <a href="index.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+
+        <footer>
+            <p>PlantGuard AI &copy; 2025 | AI-Powered Plant Health Analysis</p>
+        </footer>
+    </div>
+
+    <script>
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // In a real application, you would filter the disease cards here
+                // For this demo, we'll just show a message
+                const filterText = this.textContent;
+                if (filterText !== 'All Plants') {
+                    alert(`Filtering by: ${filterText}. In a real application, this would filter the disease cards.`);
+                }
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-bar input');
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value;
+                if (searchTerm) {
+                    alert(`Searching for: "${searchTerm}". In a real application, this would filter the disease cards.`);
+                }
+            }
+        });
+
+        // View details functionality
+        document.querySelectorAll('.view-details').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const diseaseName = this.closest('.disease-card').querySelector('.disease-name').textContent;
+                alert(`Showing details for: ${diseaseName}. In a real application, this would navigate to a detailed disease page.`);
+            });
+        });
+    </script>
+</body>
+</html>

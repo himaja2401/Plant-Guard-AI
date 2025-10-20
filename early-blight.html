@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Early Blight - PlantGuard AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #E67E22; /* Orange for fungal diseases */
+            --primary-dark: #D35400;
+            --secondary: #8E44AD; /* Purple accent */
+            --accent: #F39C12; /* Warning yellow */
+            --light-bg: #FFFFFF;
+            --light-card: #F8F9FA;
+            --light-text: #2C3E50;
+            --light-text-secondary: #7F8C8D;
+            --border: #E1E8ED;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 0;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--light-text);
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            padding: 8px 0;
+            font-size: 16px;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        /* Disease Header */
+        .disease-header {
+            background: linear-gradient(135deg, #E67E22, #D35400);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .disease-header:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: 0;
+        }
+
+        .disease-title {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .disease-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: var(--light-card);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: var(--light-text);
+        }
+
+        /* Symptoms */
+        .symptoms-list {
+            list-style: none;
+        }
+
+        .symptoms-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .symptoms-list li:last-child {
+            border-bottom: none;
+        }
+
+        .symptom-icon {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        /* Treatment */
+        .treatment-item {
+            background: rgba(230, 126, 34, 0.08);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .treatment-item:hover {
+            background: rgba(230, 126, 34, 0.12);
+        }
+
+        .treatment-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .treatment-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        /* Prevention */
+        .prevention-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .prevention-item {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: var(--light-card);
+            border-radius: 12px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .prevention-item:hover {
+            background: rgba(230, 126, 34, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .prevention-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Affected Plants */
+        .plants-section {
+            background: var(--light-card);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+            border: 1px solid var(--border);
+        }
+
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .plant-card {
+            text-align: center;
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            background: white;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .plant-card:hover {
+            transform: translateY(-5px);
+            background: rgba(230, 126, 34, 0.05);
+        }
+
+        .plant-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .plant-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--light-text);
+        }
+
+        /* Conditions Alert */
+        .conditions-alert {
+            background: linear-gradient(135deg, rgba(230, 126, 34, 0.08), rgba(142, 68, 173, 0.08));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .conditions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .condition-item {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .condition-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 3rem 0;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--light-card);
+            color: var(--light-text-secondary);
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            color: var(--light-text);
+        }
+
+        .footer-column p, .footer-column a {
+            color: var(--light-text-secondary);
+            margin-bottom: 0.8rem;
+            display: block;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--light-text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .disease-title {
+                font-size: 2.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .prevention-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .plants-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .conditions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="logo-text">PlantGuard AI</div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Disease Header -->
+    <header class="disease-header">
+        <div class="container">
+            <h1 class="disease-title">Early Blight</h1>
+            <p class="disease-subtitle">Alternaria solani</p>
+            <div class="severity-badge">
+                <i class="fas fa-exclamation-triangle"></i>
+                MODERATE SEVERITY DISEASE
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Conditions Alert -->
+        <div class="conditions-alert">
+            <div class="alert-header">
+                <div class="alert-icon">
+                    <i class="fas fa-cloud-rain"></i>
+                </div>
+                <div>
+                    <h3>Favorable Conditions</h3>
+                    <p>Early blight thrives in warm, humid environments with alternating wet and dry periods</p>
+                </div>
+            </div>
+            <div class="conditions-grid">
+                <div class="condition-item">
+                    <div class="condition-value">60-80°F</div>
+                    <div>Optimal Temperature</div>
+                </div>
+                <div class="condition-item">
+                    <div class="condition-value">High Humidity</div>
+                    <div>Rainy periods with high moisture</div>
+                </div>
+                <div class="condition-item">
+                    <div class="condition-value">Wet Leaves</div>
+                    <div>9+ hours of leaf wetness</div>
+                </div>
+                <div class="condition-item">
+                    <div class="condition-value">Warm Weather</div>
+                    <div>Late spring to early fall</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Symptoms Column -->
+            <div class="info-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h2 class="card-title">Disease Symptoms</h2>
+                </div>
+                <ul class="symptoms-list">
+                    <li>
+                        <i class="fas fa-bullseye symptom-icon"></i>
+                        <span>Target-like concentric rings on leaves with yellow halos</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-leaf symptom-icon"></i>
+                        <span>Small, dark brown to black spots on lower leaves first</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-apple-alt symptom-icon"></i>
+                        <span>Lesions on stems and fruits with sunken appearance</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-tree symptom-icon"></i>
+                        <span>Yellowing and premature defoliation starting from bottom</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-wind symptom-icon"></i>
+                        <span>Spots enlarge and merge, causing extensive leaf damage</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Treatment Column -->
+            <div class="info-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-prescription-bottle"></i>
+                    </div>
+                    <h2 class="card-title">Immediate Treatment</h2>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Fungicide Application</div>
+                    <p>Apply chlorothalonil, mancozeb, or copper-based fungicides at first sign. Reapply every 7-14 days during favorable conditions.</p>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Remove Infected Material</div>
+                    <p>Prune and destroy severely infected leaves. Remove plant debris from previous seasons to reduce spore sources.</p>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Systemic Fungicides</div>
+                    <p>Use azoxystrobin or pyraclostrobin for curative action in established infections.</p>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Cultural Practices</div>
+                    <p>Improve air circulation through proper spacing. Water at base to keep foliage dry.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prevention Section -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2 class="card-title">Prevention Strategies</h2>
+            </div>
+            <div class="prevention-grid">
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Resistant Varieties</h3>
+                    <p>Plant early blight-resistant tomato and potato cultivars</p>
+                </div>
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-tint-slash"></i>
+                    </div>
+                    <h3>Drip Irrigation</h3>
+                    <p>Avoid overhead watering to reduce leaf wetness duration</p>
+                </div>
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <h3>Proper Spacing</h3>
+                    <p>Ensure adequate plant spacing for better air circulation</p>
+                </div>
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-recycle"></i>
+                    </div>
+                    <h3>Crop Rotation</h3>
+                    <p>Practice 3-4 year rotation with non-host crops</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Affected Plants -->
+        <div class="plants-section">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <h2 class="card-title">Commonly Affected Plants</h2>
+            </div>
+            <div class="plants-grid">
+                <div class="plant-card">
+                    <div class="plant-icon">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <div class="plant-name">Tomatoes</div>
+                    <p>Most commonly affected, causing leaf spots and fruit rot</p>
+                </div>
+                <div class="plant-card">
+                    <div class="plant-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="plant-name">Potatoes</div>
+                    <p>Affects leaves, stems, and can cause tuber infections</p>
+                </div>
+                <div class="plant-card">
+                    <div class="plant-icon">
+                        <i class="fas fa-pepper-hot"></i>
+                    </div>
+                    <div class="plant-name">Eggplants</div>
+                    <p>Can cause significant leaf damage and reduced yields</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <h2 class="card-title">Additional Information</h2>
+            </div>
+            <div class="content-grid">
+                <div>
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;"><i class="fas fa-exclamation-triangle"></i> Disease Cycle</h4>
+                    <p>Early blight fungus overwinters in plant debris and soil. Spores spread through wind, rain, and contaminated tools. Infection requires high humidity and moderate temperatures.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;"><i class="fas fa-clock"></i> Management Timeline</h4>
+                    <p>Begin preventive fungicide applications before disease appears. Monitor plants weekly during warm, humid weather. Continue treatments until harvest or until conditions become unfavorable.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-primary">
+                <i class="fas fa-print"></i> Print Treatment Guide
+            </button>
+            <button class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Disease Library
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PlantGuard AI</h3>
+                    <p>Advanced plant disease detection powered by artificial intelligence for farmers and gardeners.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About Us</a>
+                    <a href="diseases.html">Disease Library</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <a href="#">Plant Care Guide</a>
+                    <a href="#">Disease Prevention</a>
+                    <a href="#">Treatment Methods</a>
+                    <a href="#">Research Papers</a>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> support@plantguard.ai</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Garden St, Green City</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 PlantGuard AI. All rights reserved. For educational and agricultural guidance purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple print functionality
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            window.print();
+        });
+
+        // Back button functionality
+        document.querySelector('.btn-outline').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantGuard AI - Smart Plant Disease Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-image {
+            position: absolute;
+            right: 5%;
+            bottom: 0;
+            width: 50%;
+            max-width: 600px;
+            z-index: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            padding: 5rem 5%;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--light);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .upload-area {
+            border: 3px dashed var(--primary);
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .upload-area:hover, .upload-area.active {
+            background: rgba(16, 185, 129, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .upload-text p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .browse-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .image-preview {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .preview-image {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .quality-feedback {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .quality-good {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .quality-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .quality-ok {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            padding: 3rem 5%;
+            background: var(--light);
+        }
+
+        .results-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .disease-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .disease-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .disease-details h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .health-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .health-status.healthy {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+        }
+
+        .health-status.diseased {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .confidence-badge {
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .probabilities {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
+
+        .probability-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .probability-label {
+            font-weight: 500;
+        }
+
+        .probability-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .recommendations {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
+
+        .recommendation-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .recommendation-item h4 {
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendation-item ul {
+            padding-left: 1.5rem;
+        }
+
+        .recommendation-item li {
+            margin-bottom: 0.5rem;
+        }
+
+        .confidence-notes {
+            background: rgba(245, 158, 11, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+        }
+
+        /* Loading Modal */
+        .loading-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .loading-bar {
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            animation: loading 3s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 5rem 5%;
+            background: white;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            border-radius: 15px;
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .step:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow);
+        }
+
+        .step-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .step h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .step p {
+            color: var(--gray);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 5% 1.5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-image {
+                display: none;
+            }
+            
+            .results-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-leaf"></i>
+            <span>PlantGuard AI</span>
+        </div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#disease-library">Disease Library</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About Us</a>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-outline">Sign In</button>
+            <button class="btn btn-primary">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content reveal">
+            <h1>Detect Plant Diseases with AI Precision</h1>
+            <p>Upload a leaf image and get instant diagnosis, treatment recommendations, and prevention tips powered by advanced machine learning.</p>
+            <div class="hero-btns">
+                <button class="btn btn-primary" onclick="scrollToUpload()">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Image
+                </button>
+                <button class="btn btn-outline">
+                    <i class="fas fa-play-circle"></i> Watch Demo
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <!-- This would be an actual image in production -->
+            <div style="width:100%; height:400px; background:linear-gradient(135deg, var(--primary), var(--secondary)); border-radius:20px; display:flex; align-items:center; justify-content:center; color:white; font-size:1.2rem;">
+                AI Plant Disease Detection Visualization
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section class="upload-section" id="uploadSection">
+        <div class="section-title reveal">
+            <h2>Upload Leaf Image for Analysis</h2>
+            <p>Get accurate disease detection and treatment recommendations in seconds</p>
+        </div>
+        <div class="upload-container reveal">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">
+                    <h3>Drag & Drop Image</h3>
+                    <p>Supports: JPG, PNG, WEBP (Max 10MB)</p>
+                </div>
+                <div class="browse-btn">Browse Files</div>
+            </div>
+            <div class="quality-feedback" id="qualityFeedback" style="display: none;"></div>
+            
+            <div class="image-preview" id="imagePreview">
+                <img src="" alt="Preview" class="preview-image" id="previewImage">
+                <div class="preview-actions">
+                    <button class="btn btn-outline" onclick="clearImage()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                    <button class="btn btn-primary" onclick="analyzeImage()">
+                        <i class="fas fa-search"></i> Analyze Image
+                    </button>
+                </div>
+            </div>
+            
+            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection">
+        <div class="results-container">
+            <div class="results-header">
+                <div class="disease-info">
+                    <div class="disease-icon" id="diseaseIcon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div class="disease-details">
+                        <h3 id="diseaseName">Tomato Early Blight</h3>
+                        <span class="health-status healthy" id="healthStatus">HEALTHY</span>
+                    </div>
+                </div>
+                <div class="confidence-badge" id="confidenceBadge">
+                    <span>Confidence:</span>
+                    <span id="confidenceValue">85.5%</span>
+                </div>
+            </div>
+            
+            <div class="results-content">
+                <div class="probabilities">
+                    <h4>Detection Probabilities</h4>
+                    <div class="probability-item">
+                        <span class="probability-label">Healthy</span>
+                        <span class="probability-value" id="healthyProb">12.3%</span>
+                    </div>
+                    <div class="probability-item">
+                        <span class="probability-label">Diseased</span>
+                        <span class="probability-value" id="diseaseProb">87.7%</span>
+                    </div>
+                    <!-- Chart would go here in production -->
+                    <div style="height:200px; background:var(--light); border-radius:10px; margin-top:1rem; display:flex; align-items:center; justify-content:center; color:var(--gray);">
+                        Probability Chart Visualization
+                    </div>
+                </div>
+                
+                <div class="recommendations" id="recommendations">
+                    <!-- Recommendations will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-title reveal">
+            <h2>How PlantGuard AI Works</h2>
+            <p>Our advanced AI system makes plant disease detection simple and accurate</p>
+        </div>
+        <div class="steps">
+            <div class="step reveal">
+                <div class="step-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>Upload Image</h3>
+                <p>Take a clear photo of the plant leaf you want to analyze and upload it to our system.</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>AI Analysis</h3>
+                <p>Our advanced neural networks analyze the image for disease patterns and symptoms.</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-icon">
+                    <i class="fas fa-diagnoses"></i>
+                </div>
+                <h3>Get Diagnosis</h3>
+                <p>Receive accurate disease identification with confidence scores and detailed information.</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-icon">
+                    <i class="fas fa-prescription-bottle"></i>
+                </div>
+                <h3>Treatment Plan</h3>
+                <p>Get personalized treatment recommendations and prevention strategies for your plants.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Modal -->
+    <div class="loading-modal" id="loadingModal">
+        <div class="modal-content">
+            <i class="fas fa-spinner fa-spin"></i>
+            <h3>Analyzing Your Image</h3>
+            <p>Our AI is examining your leaf image for disease patterns...</p>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>PlantGuard AI</h3>
+                <p>Advanced plant disease detection powered by artificial intelligence for farmers and gardeners.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#uploadSection">Disease Detection</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#">Disease Library</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Plant Care Guide</a></li>
+                    <li><a href="#">Disease Prevention</a></li>
+                    <li><a href="#">Seasonal Tips</a></li>
+                    <li><a href="#">Research Papers</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> support@plantguard.ai</li>
+                    <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                    <li><i class="fas fa-map-marker-alt"></i> 123 Garden St, Green City</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 PlantGuard AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup scroll effects
+            window.addEventListener('scroll', setupScrollEffects);
+            
+            // Setup upload functionality
+            setupUploadFunctionality();
+            
+            // Initialize reveal animations
+            initRevealAnimations();
+            
+            console.log('🌿 PlantGuard AI initialized');
+        });
+
+        function setupScrollEffects() {
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Reveal animations
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        function setupUploadFunctionality() {
+            const uploadArea = document.getElementById('uploadArea');
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImage = document.getElementById('previewImage');
+            const uploadSection = document.getElementById('uploadSection');
+
+            // Click to upload
+            uploadArea.addEventListener('click', () => imageInput.click());
+            
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('active');
+            });
+
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('active');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('active');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    processImageFile(files[0]);
+                }
+            });
+
+            // File input change
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    processImageFile(file);
+                }
+            });
+
+            function processImageFile(file) {
+                // Validate file
+                if (!validateImageFile(file)) return;
+                
+                // Show preview
+                showImagePreview(file);
+            }
+
+            function validateImageFile(file) {
+                // File size validation (max 10MB)
+                const maxSize = 10 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert('File too large. Please select an image under 10MB.');
+                    return false;
+                }
+
+                // File type validation
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Please select a valid image format (JPEG, PNG, or WebP).');
+                    return false;
+                }
+
+                return true;
+            }
+
+            function showImagePreview(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    uploadArea.style.display = 'none';
+                    imagePreview.style.display = 'block';
+                    
+                    // Show quality feedback
+                    showQualityFeedback(file);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function showQualityFeedback(file) {
+                const feedbackElement = document.getElementById('qualityFeedback');
+                if (!feedbackElement) return;
+
+                // Simulate quality analysis
+                const img = new Image();
+                const reader = new FileReader();
+                
+                reader.onload = (e) => {
+                    img.onload = () => {
+                        const resolution = img.width * img.height;
+                        let feedback = '';
+                        let feedbackClass = '';
+                        
+                        if (resolution > 1000000) {
+                            feedback = '✅ High-quality image. Ready for analysis!';
+                            feedbackClass = 'quality-good';
+                        } else if (resolution < 250000) {
+                            feedback = '⚠️ Low resolution image. For better accuracy, use higher quality images.';
+                            feedbackClass = 'quality-warning';
+                        } else {
+                            feedback = '📷 Image quality acceptable.';
+                            feedbackClass = 'quality-ok';
+                        }
+                        
+                        feedbackElement.innerHTML = feedback;
+                        feedbackElement.className = `quality-feedback ${feedbackClass}`;
+                        feedbackElement.style.display = 'block';
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function initRevealAnimations() {
+            // Initial check for elements in viewport
+            setupScrollEffects();
+        }
+
+        // Global functions for HTML onclick attributes
+        function scrollToUpload() {
+            document.getElementById('uploadSection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function analyzeImage() {
+            // Show loading modal
+            document.getElementById('loadingModal').style.display = 'flex';
+            
+            // Simulate analysis after delay
+            setTimeout(() => {
+                // Hide loading modal
+                document.getElementById('loadingModal').style.display = 'none';
+                
+                // Show results with mock data
+                displayMockResults();
+            }, 3000);
+        }
+
+        function displayMockResults() {
+            // This would use actual analysis results in production
+            const results = {
+                predictedClass: 'Tomato_Early_Blight',
+                confidence: 85.5,
+                isHealthy: false,
+                recommendations: {
+                    description: 'Fungal disease causing target-like spots with concentric rings on leaves',
+                    treatment: [
+                        'Apply copper-based fungicides every 7-10 days',
+                        'Remove and destroy infected leaves',
+                        'Improve air circulation around plants',
+                        'Avoid overhead watering to reduce leaf wetness'
+                    ],
+                    prevention: [
+                        'Practice crop rotation (3-4 year cycle)',
+                        'Use certified disease-free seeds',
+                        'Space plants properly for better air flow',
+                        'Water at the base of plants early in the day'
+                    ],
+                    notes: [
+                        'High confidence prediction - proceed with recommended treatments',
+                        'Monitor plant response to treatments over next 7-10 days'
+                    ]
+                }
+            };
+            
+            // Update UI with results
+            document.getElementById('diseaseName').textContent = formatDiseaseName(results.predictedClass);
+            document.getElementById('healthStatus').textContent = results.isHealthy ? 'HEALTHY' : 'DISEASED';
+            document.getElementById('healthStatus').className = `health-status ${results.isHealthy ? 'healthy' : 'diseased'}`;
+            document.getElementById('confidenceValue').textContent = `${results.confidence}%`;
+            
+            // Update confidence badge color
+            const confidenceBadge = document.getElementById('confidenceBadge');
+            if (results.confidence > 80) {
+                confidenceBadge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            } else if (results.confidence > 60) {
+                confidenceBadge.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+            } else {
+                confidenceBadge.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            }
+            
+            // Update disease icon
+            const diseaseIcon = document.getElementById('diseaseIcon');
+            diseaseIcon.innerHTML = results.isHealthy ? 
+                '<i class="fas fa-leaf"></i>' : 
+                '<i class="fas fa-bug"></i>';
+            
+            // Update probabilities
+            document.getElementById('healthyProb').textContent = '12.3%';
+            document.getElementById('diseaseProb').textContent = '87.7%';
+            
+            // Update recommendations
+            displayRecommendations(results.recommendations);
+            
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+            
+            // Add success animation
+            confidenceBadge.classList.add('animate-pulse');
+            setTimeout(() => {
+                confidenceBadge.classList.remove('animate-pulse');
+            }, 2000);
+        }
+
+        function displayRecommendations(recommendations) {
+            const recommendationsDiv = document.getElementById('recommendations');
+            
+            let html = `
+                <div class="recommendation-item">
+                    <h4><i class="fas fa-info-circle"></i> Description</h4>
+                    <p>${recommendations.description}</p>
+                </div>
+                
+                <div class="recommendation-item">
+                    <h4><i class="fas fa-prescription-bottle"></i> Recommended Treatments</h4>
+                    <ul>
+                        ${recommendations.treatment.map(treatment => 
+                            `<li>${treatment}</li>`
+                        ).join('')}
+                    </ul>
+                </div>
+                
+                <div class="recommendation-item">
+                    <h4><i class="fas fa-shield-alt"></i> Prevention Tips</h4>
+                    <ul>
+                        ${recommendations.prevention.map(prevention => 
+                            `<li>${prevention}</li>`
+                        ).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            // Add confidence notes if available
+            if (recommendations.notes) {
+                html += `
+                    <div class="recommendation-item confidence-notes">
+                        <h4><i class="fas fa-stethoscope"></i> Analysis Notes</h4>
+                        <ul>
+                            ${recommendations.notes.map(note => 
+                                `<li>${note}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            recommendationsDiv.innerHTML = html;
+        }
+
+        function formatDiseaseName(className) {
+            return className.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        function clearImage() {
+            document.getElementById('imageInput').value = '';
+            document.getElementById('uploadArea').style.display = 'block';

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Scab - PlantGuard AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #fefce8 100%);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: var(--light);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Header */
+        .disease-header {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .disease-title {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .disease-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Content Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        /* Symptoms */
+        .symptoms-list {
+            list-style: none;
+        }
+
+        .symptoms-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .symptoms-list li:last-child {
+            border-bottom: none;
+        }
+
+        .symptom-icon {
+            color: #8b5cf6;
+            font-size: 1.2rem;
+        }
+
+        /* Treatment */
+        .treatment-item {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .treatment-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .treatment-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        /* Prevention */
+        .prevention-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .prevention-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .prevention-item:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .prevention-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Affected Plants */
+        .plants-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .plant-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 10px;
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .plant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .plant-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .plant-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 3rem 0;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Conditions Section */
+        .conditions-alert {
+            background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+            border: 2px solid #8b5cf6;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-icon {
+            font-size: 2rem;
+            color: #8b5cf6;
+        }
+
+        .conditions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .condition-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .condition-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8b5cf6;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-column p, .footer-column a {
+            color: #cbd5e1;
+            margin-bottom: 0.8rem;
+            display: block;
+            text-decoration: none;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .disease-title {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .conditions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-leaf"></i>
+                PlantGuard AI
+            </a>
+            
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Disease Header -->
+    <header class="disease-header">
+        <div class="container">
+            <h1 class="disease-title">Apple Scab</h1>
+            <p class="disease-subtitle">Venturia inaequalis</p>
+            <div class="severity-badge">
+                <i class="fas fa-exclamation-circle"></i>
+                MODERATE SEVERITY DISEASE
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Conditions Alert -->
+        <div class="conditions-alert">
+            <div class="alert-header">
+                <div class="alert-icon">
+                    <i class="fas fa-cloud-rain"></i>
+                </div>
+                <div>
+                    <h3>Favorable Conditions</h3>
+                    <p>Apple scab thrives in specific environmental conditions</p>
+                </div>
+            </div>
+            <div class="conditions-grid">
+                <div class="condition-item">
+                    <div class="condition-value">46-75°F</div>
+                    <div>Temperature Range</div>
+                </div>
+                <div class="condition-item">
+                    <div class="condition-value">Wet Leaves</div>
+                    <div>9+ hours of leaf wetness</div>
+                </div>
+                <div class="condition-item">
+                    <div class="condition-value">Spring</div>
+                    <div>Primary infection period</div>
+                </div>
+                <div class="condition-item">
+                    <div class="condition-value">High Humidity</div>
+                    <div>Rainy spring weather</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Symptoms Column -->
+            <div class="info-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h2 class="card-title">Disease Symptoms</h2>
+                </div>
+                <ul class="symptoms-list">
+                    <li>
+                        <i class="fas fa-leaf symptom-icon"></i>
+                        <span>Olive-green to black spots on leaves and fruits</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-apple-alt symptom-icon"></i>
+                        <span>Corky, scabby lesions on apple surfaces</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-tree symptom-icon"></i>
+                        <span>Yellowing and premature leaf drop</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-wind symptom-icon"></i>
+                        <span>Velvety spores on underside of leaves</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-ban symptom-icon"></i>
+                        <span>Fruit cracking and deformation</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Treatment Column -->
+            <div class="info-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-prescription-bottle"></i>
+                    </div>
+                    <h2 class="card-title">Treatment Options</h2>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Protective Fungicides</div>
+                    <p>Apply captan, mancozeb, or sulfur-based fungicides before infection occurs</p>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Systemic Fungicides</div>
+                    <p>Use myclobutanil or trifloxystrobin for curative action after infection</p>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Cultural Control</div>
+                    <p>Remove and destroy fallen leaves and infected fruit to reduce spore sources</p>
+                </div>
+                <div class="treatment-item">
+                    <div class="treatment-title">Timing</div>
+                    <p>Begin sprays at green tip stage and continue through petal fall</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prevention Section -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2 class="card-title">Prevention Strategies</h2>
+            </div>
+            <div class="prevention-grid">
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-tree"></i>
+                    </div>
+                    <h3>Resistant Varieties</h3>
+                    <p>Plant scab-resistant apple cultivars like Liberty or Freedom</p>
+                </div>
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <h3>Proper Pruning</h3>
+                    <p>Prune trees for better air circulation and faster drying</p>
+                </div>
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-broom"></i>
+                    </div>
+                    <h3>Sanitation</h3>
+                    <p>Remove and destroy fallen leaves in autumn</p>
+                </div>
+                <div class="prevention-item">
+                    <div class="prevention-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Timely Sprays</h3>
+                    <p>Follow preventive spray schedule during spring</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Affected Plants -->
+        <div class="plants-section">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <h2 class="card-title">Affected Plants</h2>
+            </div>
+            <div class="plants-grid">
+                <div class="plant-card">
+                    <div class="plant-icon">
+                        <i class="fas fa-apple-alt"></i>
+                    </div>
+                    <div class="plant-name">Apple Trees</div>
+                    <p>Primary host - affects both fruit and foliage</p>
+                </div>
+                <div class="plant-card">
+                    <div class="plant-icon">
+                        <i class="fas fa-pear"></i>
+                    </div>
+                    <div class="plant-name">Pear Trees</div>
+                    <p>Some varieties can be affected by similar scab</p>
+                </div>
+                <div class="plant-card">
+                    <div class="plant-icon">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div class="plant-name">Hawthorn</div>
+                    <p>Alternative host for the fungus</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Life Cycle Section -->
+        <div class="info-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-recycle"></i>
+                </div>
+                <h2 class="card-title">Disease Life Cycle</h2>
+            </div>
+            <div class="content-grid">
+                <div>
+                    <h4><i class="fas fa-seedling" style="color: var(--primary);"></i> Spring Infection</h4>
+                    <p style="margin-top: 1rem;">Fungal spores from overwintered leaves infect new growth during wet spring weather. Infection requires 9+ hours of leaf wetness.</p>
+                </div>
+                <div>
+                    <h4><i class="fas fa-sync-alt" style="color: #8b5cf6;"></i> Summer Spread</h4>
+                    <p style="margin-top: 1rem;">Secondary spores produced on infected leaves spread disease throughout growing season during rainy periods.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-primary">
+                <i class="fas fa-print"></i> Print Treatment Guide
+            </button>
+            <button class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Scanner
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>PlantGuard AI</h3>
+                    <p>Advanced plant disease detection powered by artificial intelligence for farmers and gardeners.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <a href="#">Home</a>
+                    <a href="#about">About Us</a>
+                    <a href="#disease-library">Disease Library</a>
+                    <a href="#scan-plant">Scan Plant</a>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <a href="#">Plant Care Guide</a>
+                    <a href="#">Disease Prevention</a>
+                    <a href="#">Research Papers</a>
+                    <a href="#">API Documentation</a>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> support@plantguard.ai</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Garden St, Green City</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 PlantGuard AI. All rights reserved. For educational and agricultural guidance purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Simple print functionality
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            window.print();
+        });
+
+        // Back button functionality
+        document.querySelector('.btn-outline').addEventListener('click', function() {
+            window.history.back();
+        });
+
+        // Close mobile menu when clicking on links
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
